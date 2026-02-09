@@ -1,0 +1,363 @@
+/* ======================================================
+   SELECT SYSTEM PAGE - ENTERPRISE LAUNCHER
+====================================================== */
+
+.select-module-container {
+  width: 100%;
+  min-height: 100vh;
+  background: #0f172a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  position: relative;
+}
+
+.select-module-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    ellipse at top right,
+    rgba(59, 130, 246, 0.08) 0%,
+    rgba(14, 165, 233, 0.04) 40%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+.select-module-header {
+  text-align: center;
+  margin-bottom: 48px;
+  position: relative;
+  z-index: 1;
+}
+
+.select-module-title {
+  margin: 0 0 8px 0;
+  font-size: 32px;
+  font-weight: 700;
+  color: #f1f5f9;
+  letter-spacing: -0.5px;
+}
+
+.select-module-subtitle {
+  margin: 0;
+  font-size: 15px;
+  color: #94a3b8;
+}
+
+/* ======================================================
+   SYSTEMS GRID
+====================================================== */
+
+.systems-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 32px;
+  width: 100%;
+  max-width: 900px;
+  margin-bottom: 48px;
+  position: relative;
+  z-index: 1;
+}
+
+.system-card {
+  padding: 40px 32px;
+  background: #020617;
+  border: 2px solid #1e293b;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 20px;
+  font-family: inherit;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Gradient background on hover */
+.system-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, transparent, rgba(59, 130, 246, 0.05));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.system-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.system-card:hover::before {
+  opacity: 1;
+}
+
+/* Primary System (VTS) - Sky Blue */
+.system-card-primary {
+  border-color: rgba(14, 165, 233, 0.3);
+}
+
+.system-card-primary:hover {
+  border-color: #0ea5e9;
+  background: rgba(14, 165, 233, 0.03);
+}
+
+.system-card-primary:hover::before {
+  background: linear-gradient(135deg, transparent, rgba(14, 165, 233, 0.1));
+}
+
+/* Secondary System (VCS) - Emerald */
+.system-card-secondary {
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.system-card-secondary:hover {
+  border-color: #10b981;
+  background: rgba(16, 185, 129, 0.03);
+}
+
+.system-card-secondary:hover::before {
+  background: linear-gradient(135deg, transparent, rgba(16, 185, 129, 0.1));
+}
+
+/* ======================================================
+   SYSTEM ICON
+====================================================== */
+
+.system-icon {
+  font-size: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  background: rgba(59, 130, 246, 0.1);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.system-card-primary:hover .system-icon {
+  background: rgba(14, 165, 233, 0.2);
+  transform: scale(1.1);
+}
+
+.system-card-secondary .system-icon {
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.system-card-secondary:hover .system-icon {
+  background: rgba(16, 185, 129, 0.2);
+  transform: scale(1.1);
+}
+
+.system-icon-svg {
+  width: 36px;
+  height: 36px;
+  color: #0ea5e9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.system-card-secondary .system-icon-svg {
+  color: #10b981;
+}
+
+/* ======================================================
+   SYSTEM TITLE & DESCRIPTION
+====================================================== */
+
+.system-title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: #f1f5f9;
+  letter-spacing: -0.3px;
+}
+
+.system-description {
+  margin: 0;
+  font-size: 14px;
+  color: #cbd5e1;
+  line-height: 1.6;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ======================================================
+   SYSTEM BUTTONS
+====================================================== */
+
+.system-button {
+  margin-top: 8px;
+  padding: 12px 28px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  width: 100%;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Primary Button (VTS) - Sky Blue Gradient */
+.system-button-primary {
+  background: linear-gradient(135deg, #0ea5e9, #0284c7);
+  color: #020617;
+}
+
+.system-button-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(14, 165, 233, 0.35);
+}
+
+.system-button-primary:active {
+  transform: scale(0.97);
+}
+
+/* Secondary Button (VCS) - Emerald Gradient */
+.system-button-secondary {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #020617;
+}
+
+.system-button-secondary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.35);
+}
+
+.system-button-secondary:active {
+  transform: scale(0.97);
+}
+
+/* ======================================================
+   FOOTER
+====================================================== */
+
+.select-module-footer {
+  display: flex;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+
+.logout-btn {
+  padding: 10px 24px;
+  background: transparent;
+  border: 1px solid #475569;
+  border-radius: 8px;
+  color: #94a3b8;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.logout-btn:hover {
+  border-color: #64748b;
+  color: #cbd5e1;
+  background: rgba(100, 116, 139, 0.05);
+}
+
+.logout-btn:active {
+  transform: scale(0.97);
+}
+
+/* ======================================================
+   RESPONSIVE
+====================================================== */
+
+@media (max-width: 768px) {
+  .select-module-container {
+    padding: 24px;
+  }
+
+  .select-module-title {
+    font-size: 24px;
+  }
+
+  .systems-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .system-card {
+    padding: 32px 24px;
+  }
+
+  .system-icon {
+    width: 72px;
+    height: 72px;
+    font-size: 48px;
+  }
+
+  .system-title {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .select-module-container {
+    padding: 16px;
+    min-height: auto;
+  }
+
+  .select-module-header {
+    margin-bottom: 32px;
+  }
+
+  .select-module-title {
+    font-size: 20px;
+  }
+
+  .systems-grid {
+    gap: 16px;
+  }
+
+  .system-card {
+    padding: 24px 16px;
+    gap: 16px;
+  }
+
+  .system-icon {
+    width: 64px;
+    height: 64px;
+    font-size: 40px;
+  }
+
+  .system-title {
+    font-size: 18px;
+  }
+
+  .system-description {
+    font-size: 13px;
+    min-height: auto;
+  }
+
+  .system-button {
+    padding: 10px 20px;
+    font-size: 12px;
+  }
+}
+

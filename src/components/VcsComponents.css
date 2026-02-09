@@ -1,0 +1,438 @@
+/* ========================================================
+   VCS COMPONENTS — ENTERPRISE SOC STYLE (CLEAN & STABLE)
+======================================================== */
+
+/* ========================================================
+   FILTER PANEL
+======================================================== */
+
+.filter-panel {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 4px 0;
+}
+
+.filter-panel select,
+.filter-panel input[type="date"] {
+  padding: 8px 12px;
+  background: #020617;
+  border: 1px solid #1e293b;
+  border-radius: 6px;
+  color: #e5e7eb;
+  font-size: 13px;
+  transition: border-color 160ms ease-in-out, background-color 160ms ease-in-out,
+    box-shadow 160ms ease-in-out, transform 160ms ease-in-out;
+}
+
+.filter-panel select {
+  min-width: 160px;
+}
+
+.filter-panel input[type="date"] {
+  min-width: 140px;
+}
+
+.preset-buttons {
+  margin-left: auto;
+  display: inline-flex;
+  gap: 8px;
+}
+
+.preset-buttons button {
+  padding: 8px 12px;
+  font-size: 12px;
+  border-radius: 999px;
+  border: 1px solid #1e293b;
+  background: #020617;
+  color: #cbd5e1;
+  cursor: pointer;
+  transition: background-color 160ms ease-in-out, border-color 160ms ease-in-out,
+    transform 160ms ease-in-out;
+}
+
+.preset-buttons button:hover {
+  background: #111827;
+  border-color: rgba(148, 163, 184, 0.5);
+  transform: translateY(-0.5px);
+}
+
+@media (max-width: 768px) {
+  .filter-panel {
+    flex-wrap: wrap;
+  }
+
+  .preset-buttons {
+    width: 100%;
+    justify-content: flex-start;
+    margin-left: 0;
+  }
+}
+
+/* ========================================================
+   TABLE CONTROLS
+======================================================== */
+
+.data-table-container {
+  background: #020617;
+  border: 1px solid #1e293b;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.table-controls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.table-search {
+  flex: 1;
+  padding: 10px 14px;
+  background: #020617;
+  border: 1px solid #1e293b;
+  border-radius: 6px;
+  color: #e5e7eb;
+  font-size: 13px;
+}
+
+.table-search::placeholder {
+  color: #64748b;
+}
+
+.table-search:focus {
+  outline: none;
+  border-color: rgba(148, 163, 184, 0.5);
+}
+
+.export-btn {
+  padding: 10px 14px;
+  background: #020617;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-radius: 6px;
+  color: #cbd5e1;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.export-btn:hover {
+  background: #111827;
+}
+
+/* ========================================================
+   DATA TABLE
+======================================================== */
+
+.table-wrapper {
+  max-height: 500px;
+  overflow-y: auto;
+  border-radius: 8px;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  color: #cbd5e1;
+}
+
+.data-table thead {
+  position: sticky;
+  top: 0;
+  background: #020617;
+  z-index: 10;
+}
+
+.data-table th {
+  padding: 10px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  border-bottom: 1px solid #1e293b;
+  cursor: pointer;
+}
+
+.data-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(30, 41, 59, 0.6);
+}
+
+.data-table td:not(:first-child),
+.data-table th:not(:first-child) {
+  text-align: right;
+}
+
+.data-table tbody tr:hover {
+  background: rgba(30, 64, 175, 0.22);
+}
+
+.total-cell {
+  font-weight: 600;
+  color: #38bdf8;
+}
+
+.empty-cell {
+  text-align: center;
+  padding: 18px;
+  color: #64748b;
+}
+
+/* Scrollbar */
+.table-wrapper::-webkit-scrollbar {
+  width: 6px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.25);
+  border-radius: 4px;
+}
+
+/* ========================================================
+   PAGINATION
+======================================================== */
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.pagination-btn {
+  padding: 6px 12px;
+  background: #020617;
+  border: 1px solid #1e293b;
+  color: #cbd5e1;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 160ms ease-in-out, border-color 160ms ease-in-out,
+    transform 160ms ease-in-out;
+}
+
+.pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination-info {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+/* ========================================================
+   TREND LINE CHART
+======================================================== */
+
+.trend-chart-wrapper {
+  position: relative;
+  padding-top: 2px;
+}
+
+.trend-chart {
+  width: 100%;
+  height: auto;
+}
+
+.trend-path {
+  stroke-dasharray: none;
+  stroke-dashoffset: 0;
+}
+
+.chart-hover-line {
+  stroke: rgba(148, 163, 184, 0.5);
+  stroke-width: 1;
+}
+
+.chart-plot-area {
+  fill: #020617;
+  stroke: rgba(15, 23, 42, 0.9);
+  stroke-width: 1;
+  rx: 6px;
+  ry: 6px;
+}
+
+.chart-grid-line {
+  stroke: rgba(148, 163, 184, 0.1);
+  stroke-width: 1;
+}
+
+.chart-grid-line-vertical {
+  stroke-dasharray: 2 4;
+}
+
+.chart-axis-line {
+  stroke: rgba(148, 163, 184, 0.4);
+  stroke-width: 1;
+}
+
+.chart-tick-label {
+  fill: #94a3b8;
+  font-size: 10px;
+}
+
+.chart-tick-label-y {
+  dominant-baseline: central;
+}
+
+.chart-tick-label-x {
+  dominant-baseline: hanging;
+}
+
+.trend-dot {
+  opacity: 0.7;
+}
+
+.trend-tooltip {
+  position: absolute;
+  top: 18px;
+  transform: translateX(-50%);
+  background: #020617;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 12px;
+  color: #e5e7eb;
+  pointer-events: none;
+}
+
+.tooltip-header {
+  font-size: 11px;
+  color: #38bdf8;
+  margin-bottom: 6px;
+}
+
+.tooltip-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.tooltip-color {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+}
+
+/* ========================================================
+   BAR + DONUT CHARTS
+======================================================== */
+
+.chart-container h3 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #e5e7eb;
+  margin-bottom: 14px;
+}
+
+.bar-chart {
+  width: 100%;
+  position: relative;
+}
+
+.bar-chart-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.bar-rect {
+  opacity: 0.96;
+  stroke: rgba(15, 23, 42, 0.85);
+  stroke-width: 0.6;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.bar-rect:hover {
+  opacity: 1;
+  transform: translateY(-2px);
+}
+
+.bar-tooltip {
+  position: absolute;
+  top: 18px;
+  transform: translateX(-50%);
+  background: #020617;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 12px;
+}
+
+.donut-chart-wrapper {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  justify-content: center;
+}
+
+.donut-chart {
+  width: 260px;
+  height: 260px;
+}
+
+.donut-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.donut-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #cbd5e1;
+}
+
+.donut-legend-color {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+.donut-segment {
+  transition: opacity 0.15s ease;
+}
+
+.donut-tooltip {
+  margin-left: 24px;
+  background: #020617;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 12px;
+  color: #e5e7eb;
+}
+
+/* ========================================================
+   RESPONSIVE & ACCESSIBILITY
+======================================================== */
+
+@media (max-width: 768px) {
+  .table-controls {
+    flex-direction: column;
+  }
+
+  .pagination {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .donut-chart-wrapper {
+    flex-direction: column;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

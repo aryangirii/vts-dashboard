@@ -1,0 +1,104 @@
+.search-panel {
+  display: grid;
+  grid-template-columns: 2fr 1.3fr 1.3fr auto;
+  gap: 16px;
+  align-items: end;
+  background: #020617;
+  padding: 20px;
+  border-radius: 14px;
+  border: 1px solid #1e293b;
+}
+
+/* ===============================
+   INPUT GROUP
+=============================== */
+.search-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.search-group label {
+  font-size: 12px;
+  color: #94a3b8;
+  margin-bottom: 6px;
+}
+
+.search-group input {
+  background: #020617;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: #e5e7eb;
+  font-size: 14px;
+}
+
+/* Placeholder */
+.search-group input::placeholder {
+  color: #64748b;
+}
+
+/* ===============================
+   ✅ DATE INPUT — SOC GREEN FOCUS
+=============================== */
+.search-group input[type="datetime-local"] {
+  background: #020617;
+  color: #e5e7eb;
+}
+
+.search-group input[type="datetime-local"]:focus {
+  outline: none;
+  border-color: #22c55e; /* green */
+  box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.6);
+}
+
+/* Calendar icon (limited but visible) */
+.search-group input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.7) sepia(1) saturate(4) hue-rotate(90deg);
+  cursor: pointer;
+}
+
+/* ===============================
+   SEARCH BUTTON
+=============================== */
+.search-btn {
+  background: linear-gradient(135deg, #0ea5e9, #0284c7);
+  border: none;
+  border-radius: 10px;
+  padding: 12px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #020617;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  height: 42px;
+}
+
+.search-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(14, 165, 233, 0.35);
+}
+
+/* ===============================
+   QUICK DATE PRESETS
+=============================== */
+.preset-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.preset-row button {
+  background: #020617;
+  border: 1px solid #1e293b;
+  color: #94a3b8;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.preset-row button:hover {
+  border-color: #22c55e;
+  color: #22c55e;
+}

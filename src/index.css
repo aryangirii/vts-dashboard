@@ -1,0 +1,39 @@
+/* ======================================================
+   GLOBAL RESET & BASE THEME (CCTV / SOC STYLE)
+====================================================== */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* ======================================================
+   BASE BODY
+====================================================== */
+
+body {
+  background: #0f172a;          /* slate-900 */
+  color: #e5e7eb;               /* gray-200 */
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  line-height: 1.5;
+}
+
+/* ======================================================
+   LINKS
+====================================================== */
+
+a {
+  color: #38bdf8;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #0ea5e9;
+}

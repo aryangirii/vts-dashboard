@@ -1,0 +1,61 @@
+/* ======================================================
+   CCTV TIMELINE TABLE (SOC / PROFESSIONAL STYLE)
+====================================================== */
+
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 12px;
+}
+
+/* Force grid expansion */
+.timeline-table {
+  width: 100%;
+  min-width: 900px;
+  border-collapse: collapse;
+}
+
+/* Header + cells */
+.timeline-table th,
+.timeline-table td {
+  padding: 12px 14px;
+  text-align: left;
+  border-bottom: 1px solid #1e293b;
+  white-space: nowrap;
+}
+
+/* Header style */
+.timeline-table th {
+  color: #94a3b8;
+  font-size: 13px;
+  font-weight: 600;
+  background: #020617;
+}
+
+/* Cell style */
+.timeline-table td {
+  font-size: 14px;
+  color: #e5e7eb;
+}
+
+/* Alert row highlight */
+.alert-row {
+  background: rgba(239, 68, 68, 0.08);
+}
+
+/* Hover effect */
+.timeline-table tbody tr:hover {
+  background: rgba(56, 189, 248, 0.06);
+}
+
+/* Alert text */
+.cctv-alert {
+  color: #f87171;
+  font-weight: 600;
+}
+
+/* Normal text */
+.cctv-normal {
+  color: #4ade80;
+  font-weight: 500;
+}

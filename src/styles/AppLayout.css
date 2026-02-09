@@ -1,0 +1,64 @@
+/* ======================================================
+   APP LAYOUT - Main Container
+====================================================== */
+
+.app-layout {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: #0f172a;
+}
+
+/* ======================================================
+   MAIN CONTENT AREA
+====================================================== */
+
+.main-content {
+  flex: 1;
+  margin-left: 240px;
+  width: calc(100% - 240px);
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: #0f172a;
+}
+
+.main-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.main-content::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+
+.main-content::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
+}
+
+.main-content::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* ======================================================
+   RESPONSIVE LAYOUT
+====================================================== */
+
+@media (max-width: 768px) {
+  .app-layout {
+    flex-direction: column;
+  }
+
+  .main-content {
+    margin-left: 200px;
+    width: calc(100% - 200px);
+  }
+}
+
+@media (max-width: 640px) {
+  .main-content {
+    margin-left: 0;
+    width: 100%;
+  }
+}
