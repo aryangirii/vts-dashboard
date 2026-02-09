@@ -1,91 +1,150 @@
-// VCS data processing utilities
-// Transforms raw mock data into dashboard-ready aggregates
+// VCS Reactive Data Processor
+// Generates realistic, filter-responsive data for the VCS dashboard.
+// All values change logically when date range, camera, or grouping changes.
 
-const CAMERA_FACTORS = {
-  all: 1,
-  cam_001: 0.32,
-  cam_002: 0.26,
-  cam_003: 0.22,
-  cam_004: 0.18,
-  cam_005: 0.14,
+const VEHICLE_TYPES = ["Car", "Auto", "Bike", "Bus", "Truck"];
+
+const CAMERA_PROFILES = {
+  all:     { factor: 1.0,  label: "All Cameras" },
+  cam_001: { factor: 0.32, label: "Camera 001 - Main Junction" },
+  cam_002: { factor: 0.26, label: "Camera 002 - East Corridor" },
+  cam_003: { factor: 0.22, label: "Camera 003 - Office District" },
+  cam_004: { factor: 0.18, label: "Camera 004 - Parking Zone" },
+  cam_005: { factor: 0.14, label: "Camera 005 - Highway Exit" },
 };
 
-function parseDate(value) {
-  // Expecting ISO date (yyyy-mm-dd)
-  return new Date(value + "T00:00:00");
+const CAMERAS = Object.entries(CAMERA_PROFILES).map(([id, p]) => ({
+  id,
+  name: p.label,
+}));
+
+// Deterministic pseudo-random seeded by a numeric hash
+function seedRandom(seed) {
+  let s = seed;
+  return () => {
+    s = (s * 16807 + 0) % 2147483647;
+    return (s - 1) / 2147483646;
+  };
 }
 
-function getDayCount(dateFrom, dateTo) {
+function hashString(str) {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) {
+    h = (h * 31 + str.charCodeAt(i)) | 0;
+  }
+  return Math.abs(h);
+}
+
+// Hourly traffic profile (0-23h). Returns a multiplier 0..1
+const HOURLY_PROFILE = [
+  0.06, 0.04, 0.03, 0.03, 0.04, 0.10, 0.30, 0.55,
+  0.80, 0.90, 0.85, 0.75, 0.80, 0.85, 0.92, 0.88,
+  0.82, 0.85, 0.78, 0.62, 0.48, 0.35, 0.22, 0.12,
+];
+
+// Base peak counts per vehicle type at peak hour
+const BASE_PEAKS = { Car: 780, Auto: 520, Bike: 245, Bus: 82, Truck: 56 };
+
+function parseDate(str) {
+  return new Date(str + "T00:00:00");
+}
+
+function formatDate(d) {
+  return d.toISOString().slice(0, 10);
+}
+
+function getDaysBetween(from, to) {
+  const ms = to.getTime() - from.getTime();
+  return Math.max(1, Math.floor(ms / 86400000) + 1);
+}
+
+// Generate hourly data for a single day
+function generateDayHourly(dateStr, cameraFactor, rand) {
+  const rows = [];
+  for (let h = 0; h < 24; h++) {
+    const profile = HOURLY_PROFILE[h];
+    const noise = 0.85 + rand() * 0.3; // 0.85–1.15 variation
+    const row = { time: `${String(h).padStart(2, "0")}:00` };
+    VEHICLE_TYPES.forEach((type) => {
+      const base = BASE_PEAKS[type] * profile * cameraFactor * noise;
+      // Add per-type variation
+      const typeNoise = 0.9 + rand() * 0.2;
+      row[type] = Math.round(base * typeNoise);
+    });
+    rows.push(row);
+  }
+  return rows;
+}
+
+// Generate full daily data for a date range
+function generateDayRows(dateStr, cameraFactor, rand) {
+  const hourly = generateDayHourly(dateStr, cameraFactor, rand);
+  const totals = { Car: 0, Auto: 0, Bike: 0, Bus: 0, Truck: 0 };
+  hourly.forEach((row) => {
+    VEHICLE_TYPES.forEach((t) => {
+      totals[t] += row[t];
+    });
+  });
+  return { hourly, totals };
+}
+
+export function processVcsData(raw, { dateFrom, dateTo, cameraId, timeGrouping }) {
   const from = parseDate(dateFrom);
   const to = parseDate(dateTo);
-  const diffMs = to.getTime() - from.getTime();
-  const oneDay = 24 * 60 * 60 * 1000;
-  const raw = Math.floor(diffMs / oneDay) + 1;
-  return Number.isFinite(raw) && raw > 0 ? raw : 1;
-}
+  const dayCount = getDaysBetween(from, to);
+  const cameraFactor = (CAMERA_PROFILES[cameraId] || CAMERA_PROFILES.all).factor;
 
-function getCameraFactor(cameraId) {
-  return CAMERA_FACTORS[cameraId] ?? 0.4;
-}
+  // Seed from filter combination for deterministic but changing results
+  const seed = hashString(`${dateFrom}-${dateTo}-${cameraId}-${timeGrouping}`);
+  const rand = seedRandom(seed);
 
-function scaleValue(value, dayCount, cameraFactor) {
-  return Math.round(value * dayCount * cameraFactor);
-}
-
-function buildTrendSeries(rawVehiclesByTime, dayCount, cameraFactor, timeGrouping, dateFrom) {
-  // Base hourly series scaled by camera / days
-  const hourly = rawVehiclesByTime.map((entry) => {
-    const scaled = {};
-    ["Car", "Auto", "Bike", "Bus", "Truck"].forEach((k) => {
-      scaled[k] = scaleValue(entry[k], dayCount, cameraFactor);
-    });
-    return {
-      time: entry.time,
-      ...scaled,
-    };
-  });
-
-  if (timeGrouping === "hourly") {
-    return hourly;
+  // Generate data for each day in the range
+  const allDays = [];
+  for (let i = 0; i < dayCount; i++) {
+    const d = new Date(from.getTime() + i * 86400000);
+    const dateStr = formatDate(d);
+    const dayData = generateDayRows(dateStr, cameraFactor, rand);
+    allDays.push({ dateStr, ...dayData });
   }
 
-  // Daily aggregation – one point per day in range
-  const baseTotals = hourly.reduce(
-    (acc, row) => {
-      ["Car", "Auto", "Bike", "Bus", "Truck"].forEach((k) => {
-        acc[k] += row[k];
+  // Build trend series
+  let vehiclesByTime;
+  if (timeGrouping === "daily" || dayCount > 1) {
+    if (timeGrouping === "hourly" && dayCount === 1) {
+      vehiclesByTime = allDays[0].hourly;
+    } else if (timeGrouping === "hourly" && dayCount <= 3) {
+      // Show hourly but label with date prefix
+      vehiclesByTime = [];
+      allDays.forEach((day) => {
+        day.hourly.forEach((row) => {
+          vehiclesByTime.push({
+            ...row,
+            time: `${day.dateStr.slice(5)} ${row.time}`,
+          });
+        });
       });
-      return acc;
-    },
-    { Car: 0, Auto: 0, Bike: 0, Bus: 0, Truck: 0 }
-  );
-
-  const from = parseDate(dateFrom);
-  const days = [];
-  for (let i = 0; i < dayCount; i += 1) {
-    const d = new Date(from.getTime() + i * 24 * 60 * 60 * 1000);
-    const label = d.toISOString().slice(0, 10);
-    days.push({
-      time: label,
-      ...baseTotals,
-    });
+    } else {
+      // Daily aggregation
+      vehiclesByTime = allDays.map((day) => ({
+        time: day.dateStr,
+        ...day.totals,
+      }));
+    }
+  } else {
+    vehiclesByTime = allDays[0].hourly;
   }
-  return days;
-}
 
-function buildCategoryTotals(trendSeries) {
-  const totals = { Car: 0, Auto: 0, Bike: 0, Bus: 0, Truck: 0 };
-  trendSeries.forEach((row) => {
-    ["Car", "Auto", "Bike", "Bus", "Truck"].forEach((k) => {
-      totals[k] += row[k];
+  // Category totals
+  const categoryTotals = { Car: 0, Auto: 0, Bike: 0, Bus: 0, Truck: 0 };
+  allDays.forEach((day) => {
+    VEHICLE_TYPES.forEach((t) => {
+      categoryTotals[t] += day.totals[t];
     });
   });
-  return totals;
-}
 
-function buildSummary(trendSeries, categoryTotals, raw) {
-  const totalVehicles = Object.values(categoryTotals).reduce((a, b) => a + b, 0);
+  const grandTotal = Object.values(categoryTotals).reduce((a, b) => a + b, 0);
 
+  // Summary / KPI
   let dominantType = "Car";
   let dominantCount = 0;
   Object.entries(categoryTotals).forEach(([type, count]) => {
@@ -95,86 +154,59 @@ function buildSummary(trendSeries, categoryTotals, raw) {
     }
   });
 
-  let peakTrafficTime = "";
+  let peakTime = "";
   let peakTotal = 0;
-  trendSeries.forEach((row) => {
-    const sum =
-      row.Car + row.Auto + row.Bike + row.Bus + row.Truck;
+  vehiclesByTime.forEach((row) => {
+    const sum = VEHICLE_TYPES.reduce((acc, t) => acc + (row[t] || 0), 0);
     if (sum > peakTotal) {
       peakTotal = sum;
-      peakTrafficTime = row.time;
+      peakTime = row.time;
     }
   });
 
-  // Keep confidence based on original statistics
-  const avgConfidence = raw.summaryCards?.avgConfidence ?? 0;
+  // Confidence varies slightly with camera and date
+  const baseConfidence = 94.7;
+  const confOffset = (rand() - 0.5) * 4; // +/- 2%
+  const avgConfidence = Math.min(99, Math.max(88, baseConfidence + confOffset));
 
-  return {
-    totalVehicles,
+  const summaryCards = {
+    totalVehicles: grandTotal,
     dominantType,
-    peakTrafficTime,
-    avgConfidence,
+    peakTrafficTime: peakTime,
+    avgConfidence: Number(avgConfidence.toFixed(1)),
   };
-}
 
-function buildDistribution(categoryTotals) {
-  const total = Object.values(categoryTotals).reduce((a, b) => a + b, 0) || 1;
-  return Object.entries(categoryTotals).map(([name, count]) => {
-    const value = Number(((count / total) * 100).toFixed(1));
-    return { name, value, count };
-  });
-}
+  // Distribution
+  const vehicleDistribution = VEHICLE_TYPES.map((name) => ({
+    name,
+    value: grandTotal > 0 ? Number(((categoryTotals[name] / grandTotal) * 100).toFixed(1)) : 0,
+    count: categoryTotals[name],
+  }));
 
-function buildTable(rawTable, dayCount, cameraFactor) {
-  if (!Array.isArray(rawTable)) return [];
-
-  return rawTable.map((row) => {
-    const scaled = {};
-    ["Bike", "Car", "Auto", "Bus", "Truck"].forEach((k) => {
-      scaled[k] = scaleValue(row[k], dayCount, cameraFactor);
+  // Table data: generate rows for all hours across all days
+  const vehicleTable = [];
+  allDays.forEach((day) => {
+    day.hourly.forEach((row) => {
+      const total = VEHICLE_TYPES.reduce((acc, t) => acc + row[t], 0);
+      vehicleTable.push({
+        time: `${day.dateStr} ${row.time}`,
+        Bike: row.Bike,
+        Car: row.Car,
+        Auto: row.Auto,
+        Bus: row.Bus,
+        Truck: row.Truck,
+        Total: total,
+      });
     });
-    const Total =
-      scaled.Bike +
-      scaled.Car +
-      scaled.Auto +
-      scaled.Bus +
-      scaled.Truck;
-
-    return {
-      ...row,
-      ...scaled,
-      Total,
-    };
   });
-}
-
-export function processVcsData(raw, { dateFrom, dateTo, cameraId, timeGrouping }) {
-  const dayCount = getDayCount(dateFrom, dateTo);
-  const cameraFactor = getCameraFactor(cameraId);
-
-  const timeGroupingSafe = timeGrouping === "daily" ? "daily" : "hourly";
-
-  const trendSeries = buildTrendSeries(
-    raw.vehiclesByTime,
-    dayCount,
-    cameraFactor,
-    timeGroupingSafe,
-    dateFrom
-  );
-
-  const categoryTotals = buildCategoryTotals(trendSeries);
-  const summaryCards = buildSummary(trendSeries, categoryTotals, raw);
-  const vehicleDistribution = buildDistribution(categoryTotals);
-  const vehicleTable = buildTable(raw.vehicleTable, dayCount, cameraFactor);
 
   return {
     summaryCards,
-    vehiclesByTime: trendSeries,
+    vehiclesByTime,
     vehicleDistribution,
     vehicleTable,
-    cameras: raw.cameras,
+    cameras: CAMERAS,
   };
 }
 
 export default processVcsData;
-
