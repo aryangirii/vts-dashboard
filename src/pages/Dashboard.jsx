@@ -10,10 +10,8 @@ import {
   FaChartLine,
   FaSpinner,
   FaTriangleExclamation,
-  FaCircleInfo,
-  FaArrowLeft
+  FaCircleInfo
 } from "react-icons/fa6";
-import { useTheme } from "../context/ThemeContext";
 import { useAuth } from "../context/AuthContext";
 
 import SearchPanel from "../components/SearchPanel";
@@ -31,7 +29,7 @@ const STORAGE_KEY = "cctv-dashboard-state";
 function Dashboard() {
   const navigate = useNavigate();
   const { logout } = useAuth();
-  const { theme, toggleTheme } = useTheme();
+
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -115,53 +113,58 @@ function Dashboard() {
     <div className="dashboard command-center">
       {/* Professional Header */}
       <header className="dashboard-header">
-        <button
-          className="dashboard-back-btn"
-          onClick={() => navigate("/select-module")}
-          title="Back to Systems"
-        >
-          <FaArrowLeft className="back-icon" />
-          <span>Back</span>
-        </button>
+        <div className="dashboard-header-inner">
+          <div className="dashboard-header-left">
+            <button
+              className="vts-back-btn"
+              onClick={() => navigate("/select-module")}
+              title="Back to Systems"
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M10 12L6 8l4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              Back
+            </button>
 
-        <div className="header-branding">
-          <img
-            src={ZeexLogo}
-            alt="ZEEX AI"
-            className="header-logo"
-          />
-          <div className="header-titles">
-            <h1 className="dashboard-page-title">Command Center</h1>
-            <p className="dashboard-page-subtitle">Real-time vehicle tracking & CCTV intelligence</p>
+            <div className="header-branding">
+              <img
+                src={ZeexLogo}
+                alt="ZEEX AI"
+                className="header-logo"
+              />
+              <div className="header-titles">
+                <h1 className="dashboard-page-title">Command Center</h1>
+                <p className="dashboard-page-subtitle">Real-time vehicle tracking & CCTV intelligence</p>
+              </div>
+            </div>
           </div>
-        </div>
 
-        {/* Header Controls */}
-        <div className="header-controls">
-          <button
-            className="header-control-btn theme-toggle"
-            onClick={toggleTheme}
-            title={`Switch to ${theme === "dark" ? "Light" : "Dark"} Mode`}
-          >
-            {theme === "dark" ? "☀️" : "🌙"}
-          </button>
-          <button
-            className="header-control-btn system-switch"
-            onClick={() => navigate("/select-module")}
-            title="Switch System"
-          >
-            🔄
-          </button>
-          <button
-            className="header-control-btn logout"
-            onClick={() => {
-              logout();
-              navigate("/login");
-            }}
-            title="Sign Out"
-          >
-            🚪
-          </button>
+          <div className="dashboard-header-right">
+            <button
+              className="header-control-btn system-switch"
+              onClick={() => navigate("/select-module")}
+              title="Switch System"
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M13.5 6.5L12 2H4L2.5 6.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+                <rect x="1" y="6.5" width="14" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.2"/>
+                <circle cx="4.5" cy="10" r="1" fill="currentColor"/>
+                <circle cx="11.5" cy="10" r="1" fill="currentColor"/>
+              </svg>
+            </button>
+            <button
+              className="header-control-btn logout"
+              onClick={() => {
+                logout();
+                navigate("/login");
+              }}
+              title="Sign Out"
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M6 14H3a1 1 0 01-1-1V3a1 1 0 011-1h3M11 11l3-3-3-3M14 8H6" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+          </div>
         </div>
       </header>
 
